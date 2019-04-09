@@ -52,10 +52,10 @@ public class ExpressionTree{
   /* The sample tree would be: "(3 + (2 * 10))"     */
   public String toString(){
     String s = "";
-    if (isValue()) s += getValue();
+    if (isValue()) s += getValue() + " ";
     else {
       s += getLeft().toString();
-      s += getOp();
+      s += getOp() + " ";
       s += getRight().toString();
     }
     return s;
@@ -65,11 +65,11 @@ public class ExpressionTree{
   /* The sample tree would be: "3 2 10 * +"     */
   public String toStringPostfix(){
     String s = "";
-    if (isValue()) s += getValue();
+    if (isValue()) s += getValue() + " ";
     else {
-      s += getLeft().toString();
-      s += getRight().toString();
-      s += getOp();
+      s += getLeft().toStringPostfix();
+      s += getRight().toStringPostfix();
+      s += getOp() + " ";
     }
     return s;
   }
@@ -79,11 +79,11 @@ public class ExpressionTree{
 
   public String toStringPrefix(){
     String s = "";
-    if (isValue()) s += getValue();
+    if (isValue()) s += getValue() + " ";
     else {
-      s += getOp();
-      s += getLeft().toString();
-      s += getRight().toString();
+      s += getOp() + " ";
+      s += getLeft().toStringPrefix();
+      s += getRight().toStringPrefix();
     }
     return s;
   }
@@ -91,7 +91,7 @@ public class ExpressionTree{
   /*return the value of the specified expression tree*/
   public double evaluate(){
     if (isValue()) return getValue();
-    else return apply(getOp(), getLeft().evaluate(), getRight.evaluate());
+    else return apply(getOp(), getLeft().evaluate(), getRight().evaluate());
   }
 
   /*use the correct operator on both a and b, and return that value*/
@@ -101,6 +101,43 @@ public class ExpressionTree{
     else if (op == '*') return a * b;
     else if (op == '/') return a / b;
     else if (op == '%') return a % b;
+    else return -1;
+  }
+
+  public static void main(String[] args){
+    //ugly main sorry!
+    ExpressionTree a = new ExpressionTree(4.0);
+    ExpressionTree b = new ExpressionTree(2.0);
+
+    ExpressionTree c = new ExpressionTree('+',a,b);
+    System.out.println(c);
+    System.out.println(c.toStringPostfix());
+    System.out.println(c.toStringPrefix());
+    System.out.println(c.evaluate());//6.0
+
+    ExpressionTree d = new ExpressionTree('*',c,new ExpressionTree(3.5));
+    System.out.println(d);
+    System.out.println(d.toStringPostfix());
+    System.out.println(d.toStringPrefix());
+    System.out.println(d.evaluate());//21
+
+    ExpressionTree ex = new ExpressionTree('-',d,new ExpressionTree(1.0));
+    System.out.println(ex);
+    System.out.println(ex.toStringPostfix());
+    System.out.println(ex.toStringPrefix());
+    System.out.println(ex.evaluate());//20
+
+    ex = new ExpressionTree('+',new ExpressionTree(1.0),ex);
+    System.out.println(ex);
+    System.out.println(ex.toStringPostfix());
+    System.out.println(ex.toStringPrefix());
+    System.out.println(ex.evaluate());//21
+
+    ex = new ExpressionTree('/',ex,new ExpressionTree(2.0));
+    System.out.println(ex);
+    System.out.println(ex.toStringPostfix());
+    System.out.println(ex.toStringPrefix());
+    System.out.println(ex.evaluate());//10.5
   }
 
 }
